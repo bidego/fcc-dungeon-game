@@ -1,18 +1,40 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import dungeonGenerator from 'random-dungeon-generator';
 import './App.css';
 
+const normalizeDungeon = dungeon => {
+  return dungeon.map(row => {
+      return row.map(cell => {
+      if (cell ===1 ) return cell;
+      return 0;
+    })
+  })
+}
+
 class App extends Component {
+  constructor() {
+    super()
+
+    const newDungeon = dungeonGenerator({
+      width: 50,
+      height: 50,
+      minRoomSize: 5,
+      maxRoomSize: 20
+    });
+
+    this.state = {
+      dungeon: normalizeDungeon(newDungeon),
+    }
+  }
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        {this.state.dungeon.map((row, rowIndex) => (
+          <div className="dungeon-row">
+            {row.map( cell => <div className={`dungeon-cell ${ (cell===0) ? 'empty' : 'wall' }`} />)}
+          </div>
+        ))}
       </div>
     );
   }
