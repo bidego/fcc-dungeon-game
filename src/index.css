@@ -20,9 +20,12 @@ body {
 }
 
 .food {
-  background-color: blue;
+  background-color: yellow;
 }
 
 .player {
+  background-color: blue;
+}
+.enemy {
   background-color: red;
 }
