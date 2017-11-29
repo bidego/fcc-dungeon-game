@@ -7,12 +7,18 @@ body {
   display :flex;
 }
 .dungeon-cell {
+  border: 1px solid rgb(126, 255, 146);
   width: 10px;
   height: 10px;
 }
 .wall {
-  background-color: black;
+  border: 1px solid gray;
+  background-color: orange;
 }
 .empty {
-  background-color: white;
+  background-color: rgb(126, 255, 146);
+}
+
+.food {
+  background-color: blue;
 }
