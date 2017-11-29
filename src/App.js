@@ -26,16 +26,25 @@ const overMapCell = (dungeon,fn) =>
 
 const normalizeDungeon = dungeon =>
   overMapCell(dungeon, cell =>
-    cell === 1 ? cell : (Math.random()*10<9.975) ? 0 : 2
+    cell === 1 ? cell : 0
   )
 
+const loadDungeonElements = (dungeonMap, playerPosition) =>
+  overMapCell(dungeonMap, (cell, rowIndex, colIndex) => {
+    if(cell === 1) return cell
+    if(playerPosition[0] === rowIndex && playerPosition[1] === colIndex)
+      return 2
+    if(Math.random()*10<9.975)
+      return 0
+    else return 3
+  })
 const findFirstEmptyPosition = dungeon => {
   var rowNumber;
   var cellNumber;
-  overMapCell(dungeon, (cell, rowIndex, cellIndex) => {
+  overMapCell(dungeon, (cell, rowIndex, colIndex) => {
     if(cell === 0 && rowNumber === undefined) {
-      rowNumber = Math.floor( rowIndex / DUNGEON_CONFIG.width )
-      cellNumber = cellIndex % DUNGEON_CONFIG.width
+      rowNumber = rowIndex
+      cellNumber = colIndex
     }
   })
   return [ rowNumber, cellNumber ]
@@ -46,12 +55,13 @@ class App extends Component {
   constructor() {
     super()
 
-    const dungeon = normalizeDungeon(dungeonGenerator(DUNGEON_OPTIONS))
+    const emptyDungeon = normalizeDungeon(dungeonGenerator(DUNGEON_CONFIG))
+    const initPlayerPosition = findFirstEmptyPosition(emptyDungeon)
+    const loadedDungeon = loadDungeonElements(emptyDungeon, initPlayerPosition)
 
     this.state = {
-      dungeon: dungeon,
-      playerPosition: findFirstEmptyPosition(dungeon),
-      food: []
+      dungeon: loadedDungeon,
+      playerPosition: initPlayerPosition,
     }
   }
   render() {
@@ -59,7 +69,7 @@ class App extends Component {
       <div className="App">
         {this.state.dungeon.map((row, rowIndex) => (
           <div className="dungeon-row">
-            {row.map( cell => <div className={`dungeon-cell ${ (cell===0) ? 'empty' : (cell===1)?'wall':'food' }`} />)}
+            {row.map( cell => <div className={`dungeon-cell ${ (cell===0) ? 'empty' : (cell===1)?'wall': (cell===2)? 'player': 'food' }`} />)}
           </div>
         ))}
         {this.state.playerPosition}

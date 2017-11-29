@@ -22,3 +22,7 @@ body {
 .food {
   background-color: blue;
 }
+
+.player {
+  background-color: red;
+}
